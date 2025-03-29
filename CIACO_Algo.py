@@ -108,9 +108,10 @@ class CIACO:
                     new_centroids.append(new_centroid)
                     
             # Check convergence
-            if np.allclose(centroids, new_centroids):
-                break
-                
+            if len(new_centroids) == len(centroids):
+                if np.allclose(centroids, new_centroids, rtol=1e-5, atol=1e-5):
+                    break
+                    
             centroids = np.array(new_centroids)
             
         return clusters
@@ -248,18 +249,18 @@ class CIACO:
 
         # Update pheromones based on all ants
         for route, distance in zip(ant_routes, ant_distances):
-            contribution = 1 / distance
+            # Avoid division by zero
+            contribution = 1.0 / (distance + 1e-10)  # Add small epsilon to avoid division by zero
             for i in range(len(route) - 1):
-                current_idx = self.stops.index(route[i])
-                next_idx = self.stops.index(route[i + 1])
-                self.pheromone_matrix[current_idx][next_idx] += contribution
-                self.pheromone_matrix[next_idx][current_idx] += contribution
+                current = self.stops.index(route[i])
+                next_stop = self.stops.index(route[i + 1])
+                self.pheromone_matrix[current][next_stop] += contribution
+                self.pheromone_matrix[next_stop][current] += contribution
 
-        # Elitist update: reinforce best route
-        if best_distance < self.best_distance:
-            elite_contribution = self.elitist_factor / best_distance
-            for i in range(len(best_route) - 1):
-                current_idx = self.stops.index(best_route[i])
-                next_idx = self.stops.index(best_route[i + 1])
-                self.pheromone_matrix[current_idx][next_idx] += elite_contribution
-                self.pheromone_matrix[next_idx][current_idx] += elite_contribution
+        # Apply elitist update to best route
+        elitist_contribution = self.elitist_factor / (best_distance + 1e-10)  # Add small epsilon
+        for i in range(len(best_route) - 1):
+            current = self.stops.index(best_route[i])
+            next_stop = self.stops.index(best_route[i + 1])
+            self.pheromone_matrix[current][next_stop] += elitist_contribution
+            self.pheromone_matrix[next_stop][current] += elitist_contribution

@@ -1,153 +1,80 @@
-# CIACO (Clustering-Based Improved Ant Colony Optimization)
-
-This repository contains an implementation of the CIACO algorithm for solving the Traveling Salesman Problem (TSP) and similar routing problems. The algorithm combines clustering techniques with improved ant colony optimization to find efficient routes.
+# Dynamic Delivery Management & Route Optimization System
 
 ## Overview
+This system provides a dynamic truck routing and delivery management solution with real-time visualization. It uses the CIACO (Clustering-Based Improved Ant Colony Optimization) algorithm for route optimization and features a real-time GIS interface for monitoring truck movements and delivery assignments.
 
-CIACO is an enhanced version of the Ant Colony Optimization (ACO) algorithm that incorporates clustering to improve solution quality. It's particularly effective for:
-- Delivery route optimization
-- Vehicle routing problems
-- Traveling salesman problems
-- Any scenario requiring optimal path planning between multiple points
+## Key Features
+- **Real-time GIS Visualization**: Interactive map showing truck locations, routes, and delivery points
+- **Dynamic Route Optimization**: Using CIACO algorithm to optimize routes
+- **Ongoing Delivery Management**: Track truck locations, capacity, and route progress
+- **Dynamic Delivery Assignment**: Add new orders during simulation and assign to available trucks
+- **Simulation Controls**: Adjust simulation speed, number of trucks, and more
 
-## Features
+## System Components
+- **CIACO Algorithm**: Core route optimization algorithm with clustering
+- **Delivery Simulation**: Handles truck movement, order assignment, and status tracking
+- **Interactive Dashboard**: GIS visualization with simulation controls
+- **Truck & Order Management**: Tracks capacities, locations, and delivery status
 
-- **Clustering-based Initialization**: Groups nearby stops to improve initial solutions
-- **Elitist Pheromone Update**: Reinforces the best solutions found
-- **Multiple Configuration Options**: Test different parameter settings
-- **Visualization Tools**: Plot routes and clusters
-- **Performance Metrics**: Track solution quality and execution time
+## Usage Instructions
 
-## Project Structure
-
-```
-.
-├── CIACO_Algo.py      # Main algorithm implementation
-├── helper_functions.py # Utility functions
-├── main.py            # Testing and demonstration
-└── README.md          # This file
-```
-
-## Dependencies
-
-- Python 3.7+
-- NumPy
-- Matplotlib
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/CIACO.git
-cd CIACO
-```
-
+### Installation
+1. Clone the repository
 2. Install dependencies:
-```bash
-pip install numpy matplotlib
-```
+   ```
+   pip install -r requirements.txt
+   ```
 
-## Usage
+### Running the Simulation
+1. Start the application:
+   ```
+   python simulation_main.py
+   ```
+2. Access the dashboard at http://127.0.0.1:8050/
 
-### Basic Usage
+### Dashboard Controls
+- **Initialize**: Set up trucks and orders according to slider values
+- **Start/Stop/Reset**: Control simulation flow
+- **Add Order**: Dynamically add new orders during simulation
+- **Simulation Speed**: Adjust speed of truck movements
+- **Number of Trucks/Orders**: Configure simulation parameters
 
-```python
-from CIACO_Algo import CIACO
+## Implementation Details
 
-# Create stops (example coordinates)
-stops = [(0, 0), (1, 1), (2, 2), ...]
+### CIACO Algorithm
+The CIACO algorithm is a clustering-based improvement on the Ant Colony Optimization technique, providing efficient route planning by:
+- Clustering delivery points to segment the problem
+- Optimizing routes within and between clusters
+- Applying elitist pheromone strategies to improve convergence
 
-# Initialize the algorithm
-aco = CIACO(
-    num_ants=20,
-    iterations=100,
-    alpha=1.0,
-    beta=2.0,
-    evaporation_rate=0.1,
-    initial_pheromone=1.0,
-    return_to_depot=True,
-    num_clusters=3,
-    elitist_factor=2.0
-)
+### Dynamic Route Assignment
+When a new delivery is added:
+1. The system checks all ongoing trucks for remaining capacity
+2. It evaluates route feasibility based on current positions and assigned deliveries
+3. It updates routes for the selected truck using the CIACO algorithm
+4. The GIS visualization displays the re-optimized route
 
-# Find optimal route
-route = aco.optimize_route(stops)
-```
+### GIS Visualization
+The system uses Plotly and Dash to provide:
+- Real-time truck movement visualization
+- Color-coded pickup and dropoff points
+- Capacity and delivery status indicators
+- Statistics on order completion rates
 
-### Running Tests
+## File Structure
+- `simulation_main.py`: Entry point for the application
+- `gis_visualization.py`: GIS interface and simulation logic
+- `CIACO_Algo.py`: Implementation of the optimization algorithm
+- `Truck.py`: Class representing trucks with capacities and routes
+- `Order.py`: Class representing delivery orders
+- `helper_functions.py`: Utility functions for the CIACO algorithm
 
-```bash
-python main.py
-```
-
-This will:
-1. Test different problem sizes (10, 20, 30 stops)
-2. Compare various configurations
-3. Display performance metrics
-4. Show route visualizations
-
-## Algorithm Parameters
-
-- `num_ants`: Number of ants in the colony
-- `iterations`: Number of iterations to run
-- `alpha`: Pheromone importance factor
-- `beta`: Distance importance factor
-- `evaporation_rate`: Rate at which pheromone evaporates
-- `initial_pheromone`: Initial pheromone value
-- `return_to_depot`: Whether to return to starting point
-- `num_clusters`: Number of clusters for initialization
-- `elitist_factor`: Factor for elitist pheromone update
-
-## Test Configurations
-
-The code includes four test configurations:
-
-1. **Basic**
-   - Simple ACO implementation
-   - Fast execution
-   - Suitable for small problems
-
-2. **Enhanced**
-   - More ants and iterations
-   - Better solution quality
-   - Longer execution time
-
-3. **Clustered**
-   - Uses clustering-based initialization
-   - Balanced performance
-   - Good for medium-sized problems
-
-4. **Elitist**
-   - Uses elitist pheromone update
-   - Strong reinforcement of best solutions
-   - Effective for larger problems
-
-## Visualization
-
-The code includes visualization tools that show:
-- All stops as dots
-- The depot (starting point) in green
-- The optimized route as a blue line
-- Clusters in different colors (when clustering is used)
-
-## Performance Metrics
-
-The algorithm tracks:
-- Total route distance
-- Execution time
-- Solution quality
-- Convergence behavior
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+## Future Enhancements
+- Integration with real-time traffic data
+- Multi-depot optimization
+- Time window constraints for deliveries
+- Driver shift management
+- Mobile application for drivers
 
 ## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Based on the Ant Colony Optimization algorithm
-- Enhanced with clustering techniques
-- Inspired by real-world routing problems 
+This project is licensed under the MIT License - see the LICENSE file for details. 
